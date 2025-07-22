@@ -1,0 +1,22 @@
+{
+  "title": "Nested Comments System",
+  "description": "A React + TypeScript application to add comments and nested replies with unlimited depth. Users can dynamically reply to comments and sub-comments.",
+  "technologies": ["React", "TypeScript", "CSS"],
+  "features": [
+    "Add top-level comments",
+    "Add nested replies",
+    "Infinite reply depth",
+    "Toggle reply input field",
+    "Real-time UI updates"
+  ],
+  "author": "Karnam Gaari Manavadu",
+  "createdAt": "2025-07-21",
+  "difficulty": "Intermediate",
+  "tags": [
+    "nested-comments",
+    "react-project",
+    "typescript",
+    "interview-question",
+    "frontend"
+  ]
+}
