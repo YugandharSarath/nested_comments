@@ -9,7 +9,7 @@
     "Toggle reply input field",
     "Real-time UI updates"
   ],
-  "author": "Karnam Gaari Manavadu",
+  "author": "Sarath",
   "createdAt": "2025-07-21",
   "difficulty": "Intermediate",
   "tags": [
@@ -18,5 +18,7 @@
     "typescript",
     "interview-question",
     "frontend"
-  ]
+  ],
+  "companies": ["Meta ", "Reddit ", "LinkedIn "],
+  "time": "60–90 minutes"
 }
