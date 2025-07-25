@@ -3,15 +3,13 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App from './App';
 
-// Helper to add a comment
-function addComment(text: string) {
+function addComment(text) {
   const input = screen.getByPlaceholderText('Type a comment...');
   fireEvent.change(input, { target: { value: text } });
   fireEvent.click(screen.getByText('Add Comment'));
 }
 
-// Helper to add a reply to the first comment
-function addReplyToFirstComment(text: string) {
+function addReplyToFirstComment(text) {
   const replyButtons = screen.getAllByText('Add a reply');
   fireEvent.click(replyButtons[0]);
   const replyInput = screen.getByPlaceholderText('Type your reply...');
@@ -40,15 +38,12 @@ describe('App', () => {
 
   test('can add a nested reply', () => {
     render(<App />);
-    // Add a reply to the first comment
     addReplyToFirstComment('First reply');
-    // Add a reply to the reply
     const replyButtons = screen.getAllByText('Add a reply');
-    // The second reply button should be for the first reply
-    fireEvent.click(replyButtons[1]);
+    fireEvent.click(replyButtons[1]); // reply to the reply
     const replyInput = screen.getByPlaceholderText('Type your reply...');
     fireEvent.change(replyInput, { target: { value: 'Nested reply' } });
     fireEvent.click(screen.getByText('Submit'));
     expect(screen.getByText('Nested reply')).toBeInTheDocument();
   });
-}); 
+});
