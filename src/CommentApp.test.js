@@ -4,24 +4,24 @@ import '@testing-library/jest-dom';
 import App from './App';
 
 function addComment(text) {
-  const input = screen.getByPlaceholderText('Type a comment...');
+  const input = screen.getByTestId('new-comment-input');
   fireEvent.change(input, { target: { value: text } });
-  fireEvent.click(screen.getByText('Add Comment'));
+  fireEvent.click(screen.getByTestId('add-comment-btn'));
 }
 
-function addReplyToFirstComment(text) {
-  const replyButtons = screen.getAllByText('Add a reply');
-  fireEvent.click(replyButtons[0]);
-  const replyInput = screen.getByPlaceholderText('Type your reply...');
+function addReplyToComment(commentId, text) {
+  fireEvent.click(screen.getByTestId(`reply-btn-${commentId}`));
+  const replyInput = screen.getByTestId(`reply-input-${commentId}`);
   fireEvent.change(replyInput, { target: { value: text } });
-  fireEvent.click(screen.getByText('Submit'));
+  fireEvent.click(screen.getByTestId(`submit-reply-${commentId}`));
 }
 
-describe('App', () => {
+describe('CommentApp', () => {
   test('renders the comment section', () => {
     render(<App />);
     expect(screen.getByText('Comment Section')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Type a comment...')).toBeInTheDocument();
+    expect(screen.getByTestId('new-comment-input')).toBeInTheDocument();
+    expect(screen.getByTestId('add-comment-btn')).toBeInTheDocument();
   });
 
   test('can add a new comment', () => {
@@ -32,18 +32,18 @@ describe('App', () => {
 
   test('can add a reply to a comment', () => {
     render(<App />);
-    addReplyToFirstComment('This is a reply');
+    const firstCommentId = 1; // assuming first mock comment has id=1
+    addReplyToComment(firstCommentId, 'This is a reply');
     expect(screen.getByText('This is a reply')).toBeInTheDocument();
   });
 
   test('can add a nested reply', () => {
     render(<App />);
-    addReplyToFirstComment('First reply');
-    const replyButtons = screen.getAllByText('Add a reply');
-    fireEvent.click(replyButtons[1]); // reply to the reply
-    const replyInput = screen.getByPlaceholderText('Type your reply...');
-    fireEvent.change(replyInput, { target: { value: 'Nested reply' } });
-    fireEvent.click(screen.getByText('Submit'));
+    const firstCommentId = 1;
+    addReplyToComment(firstCommentId, 'First reply');
+
+    // The first reply will have a new auto-generated id = 2
+    addReplyToComment(2, 'Nested reply');
     expect(screen.getByText('Nested reply')).toBeInTheDocument();
   });
 });
