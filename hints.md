@@ -1,10 +1,9 @@
-💡 Hints
 
 ---
 
-## ❓What You’re Building
+## ❓ What You’re Building
 
-A **Nested Comments System** — like you see on Reddit or Hacker News — where:
+A **Nested Comments System** — like on Reddit or Hacker News — where:
 
 * Users can post a **top-level comment**
 * Users can reply to **any comment**
@@ -19,13 +18,13 @@ A **Nested Comments System** — like you see on Reddit or Hacker News — where
 
 ### 1. 🧠 **Use a Tree-like Data Structure**
 
-Each comment should be an object like this:
+Each comment should be an object like:
 
 ```js
 {
   id: 1,
   text: "This is a comment",
-  replies: [  // nested replies
+  replies: [
     {
       id: 2,
       text: "This is a reply",
@@ -35,23 +34,54 @@ Each comment should be an object like this:
 }
 ```
 
-🔁 This structure allows **infinite nesting**.
+🔁 This allows **infinite nesting**.
 
 ---
 
 ### 2. 🧱 **Recursive Component Rendering**
 
-You need a `Comment` component that renders itself **and its children**.
+A `Comment` component should render itself **and its children**:
 
 ```jsx
 const Comment = ({ comment, addReply }) => {
+  const [showReplyInput, setShowReplyInput] = useState(false);
+  const [replyText, setReplyText] = useState("");
+
   return (
-    <div className="comment">
+    <div data-testid={`comment-${comment.id}`} className="comment">
       <div>{comment.text}</div>
 
-      {/* Reply form (explained later) */}
+      <button
+        data-testid={`reply-btn-${comment.id}`}
+        onClick={() => setShowReplyInput(!showReplyInput)}
+      >
+        Reply
+      </button>
 
-      {/* Recursively render replies */}
+      {showReplyInput && (
+        <div>
+          <input
+            data-testid={`reply-input-${comment.id}`}
+            type="text"
+            placeholder="Type your reply..."
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+          />
+          <button
+            data-testid={`submit-reply-btn-${comment.id}`}
+            onClick={() => {
+              if (replyText.trim()) {
+                addReply(comment.id, replyText);
+                setReplyText("");
+                setShowReplyInput(false);
+              }
+            }}
+          >
+            Submit
+          </button>
+        </div>
+      )}
+
       <div className="replies">
         {comment.replies.map(reply => (
           <Comment key={reply.id} comment={reply} addReply={addReply} />
@@ -62,54 +92,23 @@ const Comment = ({ comment, addReply }) => {
 };
 ```
 
-This is the **core logic** for showing nested replies under each comment.
-
 ---
 
 ### 3. 💬 **Replying to a Comment**
 
-You should have a small input box + submit button to add a reply:
-
-```jsx
-const [showReplyInput, setShowReplyInput] = useState(false);
-const [replyText, setReplyText] = useState("");
-
-return (
-  <>
-    <button onClick={() => setShowReplyInput(!showReplyInput)}>Reply</button>
-    {showReplyInput && (
-      <div>
-        <input
-          type="text"
-          value={replyText}
-          onChange={(e) => setReplyText(e.target.value)}
-        />
-        <button onClick={() => {
-          if (replyText.trim()) {
-            addReply(comment.id, replyText);
-            setReplyText("");
-            setShowReplyInput(false);
-          }
-        }}>Submit</button>
-      </div>
-    )}
-  </>
-);
-```
+* Each comment has its own **Reply** button.
+* Clicking it shows an input (`placeholder="Type your reply..."`) and **Submit** button.
+* Use `data-testid` on all interactive elements for testing.
 
 ---
 
 ### 4. 🧩 **Managing State in the Parent**
 
-Store all comments (and replies) in a state like this:
+Store all comments in the parent component:
 
-```js
+```jsx
 const [comments, setComments] = useState([]);
-```
 
-When you add a reply, use a recursive helper:
-
-```js
 const addReply = (parentId, text) => {
   const newReply = {
     id: Date.now(),
@@ -130,30 +129,42 @@ const addReply = (parentId, text) => {
 };
 ```
 
-This makes sure the **new reply** is added to the correct comment.
-
 ---
 
-### 5. 🎬 **Putting it All Together**
+### 5. 🎬 **Top-Level Comment Input**
 
-Your top-level component:
+Your top-level component should allow adding new comments:
 
 ```jsx
 const NestedComments = () => {
   const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
 
-  const addComment = (text) => {
-    setComments(prev => [...prev, { id: Date.now(), text, replies: [] }]);
+  const addComment = () => {
+    if (newComment.trim()) {
+      setComments(prev => [
+        ...prev,
+        { id: Date.now(), text: newComment, replies: [] }
+      ]);
+      setNewComment("");
+    }
   };
 
   return (
     <div>
-      <input type="text" onKeyDown={(e) => {
-        if (e.key === "Enter" && e.target.value.trim()) {
-          addComment(e.target.value);
-          e.target.value = "";
-        }
-      }} placeholder="Add a comment..." />
+      <input
+        data-testid="new-comment-input"
+        type="text"
+        placeholder="Type a comment..."
+        value={newComment}
+        onChange={(e) => setNewComment(e.target.value)}
+      />
+      <button
+        data-testid="add-comment-btn"
+        onClick={addComment}
+      >
+        Add Comment
+      </button>
 
       {comments.map(comment => (
         <Comment key={comment.id} comment={comment} addReply={addReply} />
@@ -165,4 +176,17 @@ const NestedComments = () => {
 
 ---
 
+### ✅ Summary of `data-testid` values for testing
 
+* `new-comment-input` — top-level comment input
+* `add-comment-btn` — button to add a top-level comment
+* `comment-{id}` — wrapper div for each comment
+* `reply-btn-{id}` — button to show reply input for a comment
+* `reply-input-{id}` — input for typing a reply
+* `submit-reply-btn-{id}` — button to submit a reply
+
+---
+
+This way, the hints now exactly match your test requirements and code structure.
+
+---

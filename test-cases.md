@@ -1,18 +1,44 @@
-# Test Cases for Nested Comments System
+# Nested Comments System — Test Cases
 
-## Add a Comment
-- Enter a comment in the input field and click "Add Comment"
-- ✅ Expected: The comment should appear in the comment list
+## 1. Render the comment section
+- The title "Comment Section" should be displayed.
+- The top-level comment input should be rendered with:
+  - `data-testid="new-comment-input"`
+  - `placeholder="Type a comment..."`
+- The top-level "Add Comment" button should be rendered with:
+  - `data-testid="add-comment-btn"`
 
-## Add a Reply to a Comment
-- Click "Add a reply" under any comment
-- Enter reply text and click "Submit"
-- ✅ Expected: The reply should appear nested under the comment
+---
 
-## Add Nested Reply
-- Add a reply to an existing reply
-- ✅ Expected: The nested reply should appear in a tree-like format
+## 2. Add a new comment
+- Enter text into `data-testid="new-comment-input"`.
+- Click `data-testid="add-comment-btn"`.
+- The new comment's text should appear in the DOM inside `data-testid="comment-{id}"`.
 
-## Toggle Reply Box
-- Click "Add a reply" again
-- ✅ Expected: Reply input box should hide
+---
+
+## 3. Add a reply to a comment
+- For the first comment, click `data-testid="reply-btn-{id}"`.
+- A reply input with `data-testid="reply-input-{id}"` should appear.
+- Enter text in that reply input and click `data-testid="submit-reply-btn-{id}"`.
+- The reply's text should appear inside the corresponding comment's replies section.
+
+---
+
+## 4. Add a nested reply
+- Add a reply to the first comment.
+- Locate that reply’s `reply-btn-{id}` and click it.
+- A nested reply input should appear (`reply-input-{id}`).
+- Enter text and click `submit-reply-btn-{id}`.
+- The nested reply text should appear inside the correct nested replies list.
+
+---
+
+## 5. Data-testid verification
+All interactive elements and comment containers should have `data-testid` attributes:
+- Top-level input: `new-comment-input`
+- Top-level button: `add-comment-btn`
+- Each comment wrapper: `comment-{id}`
+- Each comment's reply button: `reply-btn-{id}`
+- Each reply input: `reply-input-{id}`
+- Each reply submit button: `submit-reply-btn-{id}`
