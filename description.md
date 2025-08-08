@@ -53,5 +53,10 @@
 - Every **reply button** must have a unique `data-testid` in the format `reply-btn-{id}`.
 - Every **reply input field** must have a unique `data-testid` in the format `reply-input-{id}`.
 - Every **submit reply** button must have a unique `data-testid` in the format `submit-reply-{id}`.
-
+- Use mock.json to preload comments when the app loads.
+- mock.json should contain an array of top-level comments, each with:
+     id (unique number or string)
+     text (string)
+     replies (array of nested comment objects with same structure)
+- This ensures test cases can start with existing nested comments for verification.
 ---
